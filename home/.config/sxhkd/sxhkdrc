@@ -1,0 +1,128 @@
+# Приложения
+
+super + Return
+    alacritty
+
+super + shift + Return
+    alacritty --class float,float
+
+super + d
+    kbd-latin; rofi -show drun
+
+super + x
+    kbd-latin; powermenu
+
+super + v
+    kbd-latin; clipboard
+
+super + p
+    togglebar
+
+super + w
+    wallpaper -r
+
+super + shift + w
+    wifimenu
+
+super + shift + {f,n,p,t,c,i,x,e,l,s,b}
+    {firefox, \
+    thunar, \
+    pavucontrol, \
+    telegram-desktop, \
+    kbd-latin; rofi -show calc -modi calc -no-show-match -no-sort, \
+    firefox --private-window, \
+    colorpick, \
+    kbd-latin; rofi -show emoji -modi emoji, \
+    lock, \
+    alacritty --class float,float -e btop, \
+    alacritty --class float,float -e bluetuith}
+
+Print
+    flameshot gui
+
+shift + Print
+    flameshot full -c
+
+super + Escape
+    pkill -USR1 -x sxhkd; notify-send -t 1500 sxhkd 'Конфиг перечитан'
+
+# Мультимедиа
+
+XF86Audio{RaiseVolume,LowerVolume,Mute}
+    volume {up,down,mute}
+
+XF86AudioMicMute
+    volume mic
+
+# brightness-keys
+XF86MonBrightness{Up,Down}
+    brightness {up,down}
+# brightness-keys-end
+
+XF86Audio{Play,Pause,Next,Prev}
+    playerctl {play-pause,play-pause,next,previous}
+
+# bspwm
+
+ctrl + shift + {q,r}
+    bspc {quit,wm -r}
+
+super + shift + m
+    monitors; ~/.config/polybar/launch.sh
+
+super + c
+    bspc node -c
+
+super + alt + c
+    bspc node -k
+
+super + m
+    bspc desktop -l next
+
+super + space
+    bspc node -t "~"{floating,tiled}
+
+super + {t,ctrl + t,f}
+    bspc node -t {tiled,pseudo_tiled,~fullscreen}
+
+super + ctrl + {m,x,y,z}
+    bspc node -g {marked,locked,sticky,private}
+
+super + g
+    bspc node -s biggest.window
+
+super + {_,alt + }{h,j,k,l}
+    bspc node -{f,s} {west,south,north,east}
+
+super + {_,alt + }{Left,Down,Up,Right}
+    bspc node -{f,s} {west,south,north,east}
+
+alt + {_,shift + }Tab
+    bspc node -f {next,prev}.local.!hidden.window
+
+super + {grave,Tab}
+    bspc {node,desktop} -f last
+
+super + bracket{left,right}
+    bspc desktop -f {prev,next}.local
+
+super + {_,shift + }{1-9,0}
+    bspc {desktop -f,node -d} '^{1-9,10}'
+
+super + ctrl + {1-9}
+    bspc node -o 0.{1-9}
+
+super + ctrl + space
+    bspc node -p cancel
+
+super + ctrl + shift + space
+    bspc query -N -d | xargs -I id -n 1 bspc node id -p cancel
+
+super + ctrl + {h,j,k,l}
+    bspc node -z {left -20 0 || bspc node -z right -20 0, \
+                  bottom 0 20 || bspc node -z top 0 20, \
+                  top 0 -20 || bspc node -z bottom 0 -20, \
+                  right 20 0 || bspc node -z left 20 0}
+
+super + shift + {Left,Down,Up,Right}
+    bspc node -v {-20 0,0 20,0 -20,20 0}

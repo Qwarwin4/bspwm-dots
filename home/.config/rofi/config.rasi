@@ -1,0 +1,22 @@
+configuration {
+    modi: "drun,run,window";
+    font: "JetBrainsMono Nerd Font 13";
+    show-icons: true;
+    icon-theme: "Papirus-Dark";
+    terminal: "alacritty";
+    drun-display-format: "{name}";
+    disable-history: false;
+    sidebar-mode: true;
+    hover-select: true;
+    me-select-entry: "";
+    me-accept-entry: "MousePrimary";
+    display-drun: " 󰀻 Apps ";
+    display-run: "  Run ";
+    display-window: "  Windows ";
+    display-calc: " 󰃬 Calc ";
+    display-emoji: " 󰞅 Emoji ";
+    display-clipboard: " 󰅌 Clip ";
+    monitor: -1;
+}
+
+@theme "zp"

@@ -1,0 +1,7 @@
+#!/bin/sh
+
+color=$(gpick -s -o --no-newline 2>/dev/null)
+[ -z "$color" ] && exit 0
+
+printf '%s' "$color" | xclip -selection clipboard
+notify-send -u low -i color-select "Цвет скопирован" "<span foreground='$color'>██████</span>  $color"

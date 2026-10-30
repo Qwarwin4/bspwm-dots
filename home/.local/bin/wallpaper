@@ -1,0 +1,37 @@
+#!/bin/sh
+# wallpaper [-r | файл]
+
+dir="${WALLPAPER_DIR:-$(xdg-user-dir PICTURES 2>/dev/null || echo "$HOME/Pictures")/wallpapers}"
+state="${XDG_CACHE_HOME:-$HOME/.cache}/wallpaper"
+mkdir -p "${state%/*}"
+
+pick() {
+    find -L "$dir" -type f \( -iname '*.jpg' -o -iname '*.jpeg' -o -iname '*.png' -o -iname '*.webp' \) 2>/dev/null |
+        grep -vxF "$(cat "$state" 2>/dev/null)" | shuf -n1
+}
+
+case "$1" in
+    -r|--random) img=$(pick) ;;
+    "") img=$(cat "$state" 2>/dev/null); [ -f "$img" ] || img=$(pick) ;;
+    *) img=$(realpath "$1") ;;
+esac
+
+if [ ! -f "$img" ]; then
+    img=$(find -L "$dir" -type f 2>/dev/null | head -n1)
+fi
+
+if [ ! -f "$img" ]; then
+    xsetroot -solid '#1e222a'
+    exit 0
+fi
+
+feh --no-fehbg --bg-fill "$img" || exit 1
+printf '%s\n' "$img" >"$state"
+pub=/var/lib/bspwm-dots/user
+if [ -w "$pub" ]; then
+    printf '%s\n' "$img" >"$pub/wallpaper"
+    (magick "$img" -resize '2560x2560>' -quality 90 "$pub/.background.jpg" &&
+        mv -f "$pub/.background.jpg" "$pub/background.jpg") >/dev/null 2>&1 &
+fi
+
+command -v lock >/dev/null && lock --prepare >/dev/null 2>&1 &

@@ -1,0 +1,31 @@
+@import "zp.rasi"
+
+configuration {
+    show-icons: false;
+}
+
+window {
+    width: 360px;
+}
+
+mainbox {
+    children: [ inputbar, listview ];
+}
+
+inputbar {
+    children: [ prompt ];
+}
+
+listview {
+    columns: 1;
+    lines: 6;
+    fixed-height: false;
+}
+
+element {
+    padding: 8px 12px;
+}
+
+element-text {
+    horizontal-align: 0;
+}

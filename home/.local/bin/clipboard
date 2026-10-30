@@ -1,0 +1,3 @@
+#!/bin/sh
+
+CM_LAUNCHER=rofi exec clipmenu -p "󰅌" -theme menu

@@ -1,0 +1,28 @@
+# Ставится всегда. Репозиторий или AUR определяется автоматически.
+# Пакеты оболочки (zsh, fish, bash) добавляет установщик по выбору.
+
+base-devel git curl wget sudo pciutils usbutils python
+pacman-contrib reflector man-db man-pages less
+
+xorg-server xorg-xinit xorg-xrandr xorg-xsetroot xorg-xset xorg-xprop
+xorg-xrdb xorg-setxkbmap xorg-xinput xorg-xdpyinfo xorg-xwininfo
+
+bspwm sxhkd polybar picom rofi rofi-calc rofi-emoji
+dunst libnotify feh xdotool xclip xsel
+xss-lock clipmenu redshift imagemagick
+
+pipewire pipewire-pulse pipewire-alsa pipewire-jack wireplumber
+pavucontrol pamixer playerctl
+
+networkmanager network-manager-applet
+brightnessctl polkit-gnome
+gvfs gvfs-mtp udisks2 udiskie
+xdg-user-dirs xdg-utils xdg-desktop-portal-gtk
+
+ttf-jetbrains-mono-nerd ttf-jetbrains-mono ttf-nerd-fonts-symbols
+noto-fonts noto-fonts-emoji noto-fonts-cjk
+papirus-icon-theme gnome-themes-extra lxappearance bibata-cursor-theme-bin
+
+alacritty starship fzf zoxide eza bat fd ripgrep
+btop htop fastfetch yazi tealdeer jq tree rsync
+zip unzip p7zip unrar

@@ -1,0 +1,77 @@
+#!/bin/sh
+# ly-dur IMAGE COLS ROWS PALETTE OUT
+
+set -eu
+
+img=$1 cols=$2 rows=$3 pal=$4 out=$5
+tmp=$(mktemp -d)
+trap 'rm -rf "$tmp"' EXIT
+
+awk -F, 'NR <= 3 { for (i = 1; i <= 16; i++) c[NR, i] = $i }
+    END { for (i = 1; i <= 16; i++) printf "%d %d %d\n", c[1, i], c[2, i], c[3, i] }' "$pal" >"$tmp/pal"
+
+awk '{ printf "xc:rgb(%d,%d,%d) ", $1, $2, $3 }' "$tmp/pal" >"$tmp/args"
+# shellcheck disable=SC2046
+magick $(cat "$tmp/args") +append "$tmp/pal.png"
+
+h=$((rows * 2))
+magick "$img" -resize "${cols}x${h}^" -gravity center -extent "${cols}x${h}" \
+    -modulate 100,115 -dither FloydSteinberg -define dither:diffusion-amount=35% -remap "$tmp/pal.png" \
+    -depth 8 txt:- | awk -v cols="$cols" -v rows="$rows" -v palf="$tmp/pal" '
+BEGIN {
+    n = 0
+    while ((getline l < palf) > 0) { split(l, v, " "); R[n] = v[1]; G[n] = v[2]; B[n] = v[3]; n++ }
+    split("0 5 3 7 2 6 4 8 9 13 11 15 10 14 12 16", fgc, " ")
+    split("0 4 2 6 1 5 3 7", bgc, " ")
+    for (i = 8; i < 16; i++) {
+        best = 0; bd = -1
+        for (j = 0; j < 8; j++) {
+            d = (R[i]-R[j])^2 + (G[i]-G[j])^2 + (B[i]-B[j])^2
+            if (bd < 0 || d < bd) { bd = d; best = j }
+        }
+        dark[i] = best
+    }
+    for (i = 0; i < 8; i++) dark[i] = i
+}
+function hx(s) { return index("0123456789abcdef", tolower(substr(s, 1, 1))) * 16 + index("0123456789abcdef", tolower(substr(s, 2, 1))) - 17 }
+/^#/ { next }
+{
+    split($1, xy, /[,:]/)
+    hex = ""
+    for (k = 2; k <= NF; k++) if ($k ~ /^#[0-9A-Fa-f]{6}/) { hex = substr($k, 2, 6); break }
+    r = hx(substr(hex, 1, 2)); g = hx(substr(hex, 3, 2)); b = hx(substr(hex, 5, 2))
+    best = 0; bd = -1
+    for (j = 0; j < 16; j++) {
+        d = (R[j]-r)^2 + (G[j]-g)^2 + (B[j]-b)^2
+        if (bd < 0 || d < bd) { bd = d; best = j }
+    }
+    px[xy[1], xy[2]] = best
+}
+END {
+    printf "{\"DurMovie\":{\"formatVersion\":7,\"colorFormat\":\"16\",\"preferredFont\":\"fixed\",\"encoding\":\"utf-8\","
+    printf "\"name\":\"wallpaper\",\"artist\":\"\",\"framerate\":1.0,\"sizeX\":%d,\"sizeY\":%d,\"extra\":null,", cols, rows
+    printf "\"frames\":[{\"frameNumber\":1,\"delay\":0,\"contents\":["
+    for (y = 0; y < rows; y++) {
+        line = ""
+        for (x = 0; x < cols; x++) {
+            t = px[x, 2*y]; u = px[x, 2*y+1]
+            if (t == u)      { ch = "█"; f = t; k = dark[t] }
+            else if (t < 8)  { ch = "▄"; f = u; k = t }
+            else if (u < 8)  { ch = "▀"; f = t; k = u }
+            else             { ch = "▀"; f = t; k = dark[u] }
+            line = line ch
+            F[x, y] = fgc[f + 1]; K[x, y] = bgc[k + 1]
+        }
+        printf "%s\"%s\"", (y ? "," : ""), line
+    }
+    printf "],\"colorMap\":["
+    for (x = 0; x < cols; x++) {
+        printf "%s[", (x ? "," : "")
+        for (y = 0; y < rows; y++) printf "%s[%d,%d]", (y ? "," : ""), F[x, y], K[x, y]
+        printf "]"
+    }
+    printf "]}]}}\n"
+}' >"$tmp/out.json"
+
+gzip -9 -c "$tmp/out.json" >"$tmp/out.dur"
+mv -f "$tmp/out.dur" "$out"

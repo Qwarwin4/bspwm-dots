@@ -1,0 +1,24 @@
+#!/bin/sh
+
+lock="󰌾  Lock"
+logout="󰍃  Logout"
+suspend="󰒲  Suspend"
+reboot="󰜉  Reboot"
+poweroff="󰐥  Shutdown"
+
+confirm() {
+    ans=$(printf 'Yes\nNo\n' | rofi -dmenu -i -p "$1?" -theme menu)
+    [ "$ans" = "Yes" ]
+}
+
+up=$(uptime -p | sed 's/^up //')
+choice=$(printf '%s\n' "$lock" "$suspend" "$logout" "$reboot" "$poweroff" |
+    rofi -dmenu -i -p "󰥔 $up" -theme menu)
+
+case "$choice" in
+    "$lock") lock ;;
+    "$suspend") systemctl suspend ;;
+    "$logout") confirm Logout && bspc quit ;;
+    "$reboot") confirm Reboot && systemctl reboot ;;
+    "$poweroff") confirm Shutdown && systemctl poweroff ;;
+esac

@@ -1,0 +1,63 @@
+#!/bin/sh
+
+if [ "$(nmcli -t -f WIFI g)" != "enabled" ]; then
+    ans=$(printf '󰤨  Enable Wi-Fi\n' | rofi -dmenu -p "Wi-Fi off" -theme menu)
+    [ -n "$ans" ] && nmcli radio wifi on && notify-send -i network-wireless "Wi-Fi" "Включён"
+    exit 0
+fi
+
+notify-send -t 1500 -i network-wireless "Wi-Fi" "Сканирование..."
+
+nets=$(mktemp)
+trap 'rm -f "$nets"' EXIT
+
+nmcli -t -f IN-USE,SIGNAL,SECURITY,SSID dev wifi list --rescan yes | awk '{
+    line = $0
+    for (i = 0; i < 3; i++) { p = index(line, ":"); f[i] = substr(line, 1, p - 1); line = substr(line, p + 1) }
+    gsub(/\\:/, ":", line)
+    if (line == "" || seen[line]++) next
+    printf "%s\t%s\t%s\t%s\n", f[0], f[1], f[2], line
+}' >"$nets"
+
+current=$(awk -F'\t' '$1 == "*" {print $4; exit}' "$nets")
+count=$(wc -l <"$nets")
+
+idx=$( {
+    awk -F'\t' '{
+        mark = ($1 == "*") ? "󰄬" : " "
+        lock = ($3 == "" || $3 == "--") ? " " : ""
+        printf "%s %s %3s%%  %s\n", mark, lock, $2, $4
+    }' "$nets"
+    printf '󰤮  Disable Wi-Fi\n󰑐  Rescan\n󰒓  Connection editor\n'
+} | rofi -dmenu -i -format i -p "${current:-not connected}" -theme menu)
+
+[ -z "$idx" ] && exit 0
+
+if [ "$idx" -ge "$count" ]; then
+    case $((idx - count)) in
+        0) nmcli radio wifi off ;;
+        1) exec "$0" ;;
+        2) exec nm-connection-editor ;;
+    esac
+    exit 0
+fi
+
+row=$(sed -n "$((idx + 1))p" "$nets")
+ssid=$(printf '%s' "$row" | cut -f4)
+sec=$(printf '%s' "$row" | cut -f3)
+
+if nmcli -g NAME connection show | grep -qxF "$ssid"; then
+    nmcli connection up id "$ssid" >/dev/null 2>&1
+elif [ -n "$sec" ] && [ "$sec" != "--" ]; then
+    pass=$(rofi -dmenu -password -p "Password" -theme menu </dev/null)
+    [ -z "$pass" ] && exit 0
+    nmcli device wifi connect "$ssid" password "$pass" >/dev/null 2>&1
+else
+    nmcli device wifi connect "$ssid" >/dev/null 2>&1
+fi
+
+if [ $? -eq 0 ]; then
+    notify-send -i network-wireless "Wi-Fi" "Подключено: $ssid"
+else
+    notify-send -u critical -i network-wireless-offline "Wi-Fi" "Не удалось подключиться к $ssid"
+fi

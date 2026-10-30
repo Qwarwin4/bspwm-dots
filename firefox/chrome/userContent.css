@@ -1,0 +1,13 @@
+@-moz-document url("about:blank"), url("about:newtab"), url("about:home"), url("about:privatebrowsing") {
+  html, body {
+    background-color: #1e222a !important;
+  }
+}
+
+@-moz-document url("about:newtab"), url("about:home") {
+  body {
+    --newtab-background-color: #1e222a !important;
+    --newtab-background-color-secondary: #2b2f37 !important;
+    --newtab-text-primary-color: #d9e0ee !important;
+  }
+}

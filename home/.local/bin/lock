@@ -1,0 +1,169 @@
+#!/bin/sh
+# i3lock с размытыми текущими обоями; --prepare только готовит картинку
+
+pgrep -x "i3lock|i3lock-dots" >/dev/null && exit 0
+
+bg=1e222a
+pill=2b2f37
+fg=c0caf5
+accent=989cfa
+muted=adb1b9
+wrong=d35f5e
+
+fw=332
+fh=44
+
+cdir="${XDG_CACHE_HOME:-$HOME/.cache}"
+cache="$cdir/lock"
+log="$cache/error.log"
+mkdir -p "$cache"
+[ -f "$log" ] && [ "$(wc -c <"$log")" -gt 65536 ] && : >"$log"
+
+wall=$(cat "$cdir/wallpaper" 2>/dev/null)
+[ -f "$wall" ] || wall=$(sed -n "s/.*--bg-[a-z]*[^']*'\([^']*\)'.*/\1/p" "$HOME/.fehbg" 2>/dev/null | head -n1)
+[ -f "$wall" ] || wall=/var/lib/bspwm-dots/user/background.jpg
+
+mons=$(xrandr --listactivemonitors 2>/dev/null | awk 'NR > 1 {
+    split($3, g, /[x+]/); sub(/\/.*/, "", g[1]); sub(/\/.*/, "", g[2]); print g[1], g[2], g[3], g[4]
+}')
+root=$(xrandr --query 2>/dev/null | awk '/current/{gsub(",", ""); print $8 "x" $10; exit}')
+case "$root" in
+    *[0-9]x[0-9]*) ;;
+    *) root=$(printf '%s\n' "$mons" | awk '$1 { if ($1 + $3 > w) w = $1 + $3; if ($2 + $4 > h) h = $2 + $4 } END { if (w) print w "x" h }') ;;
+esac
+[ -n "$mons" ] || mons=$(printf '%s\n' "$root" | awk -Fx '$2 { print $1, $2, 0, 0 }')
+
+img="$cache/$(printf '%s' "$wall:$root:$mons" | md5sum | cut -c1-12).png"
+nerd=$(fc-match -f '%{file}' 'JetBrainsMono Nerd Font' 2>/dev/null)
+
+im=magick
+command -v magick >/dev/null 2>&1 || im=convert
+
+render_full() {
+    out=$1
+    set -- -size "$root" "xc:#$bg"
+    while read -r w h x y; do
+        [ -n "$w" ] || continue
+        fx=$((x + (w - fw) / 2))
+        fy=$((y + h / 2 + 88))
+        set -- "$@" \( "$wall" -resize "${w}x${h}^" -gravity center -extent "${w}x${h}" \
+            -scale 20% -blur 0x3 -resize "${w}x${h}!" -fill "#$bg" -colorize 25% \) \
+            -gravity northwest -geometry "+$x+$y" -composite \
+            -fill "#$pill" -stroke "#$accent" -strokewidth 2 \
+            -draw "roundrectangle $fx,$fy $((fx + fw)),$((fy + fh)) 8,8" -stroke none
+        if [ -n "$nerd" ]; then
+            set -- "$@" +gravity -font "$nerd" -pointsize 16 -fill "#$accent" \
+                -annotate "+$((fx + 15))+$((fy + fh / 2 + 6))" "" \
+                -pointsize 15 -fill "#$muted" \
+                -annotate "+$((x + 24))+$((y + h - 24))" "󰌌"
+        fi
+    done <<EOF
+$mons
+EOF
+    "$im" "$@" -depth 8 "png:$out"
+}
+
+render_plain() {
+    "$im" "$wall" -resize "${root}^" -gravity center -extent "$root" \
+        -scale 20% -blur 0x3 -resize "${root}!" -fill "#$bg" -colorize 25% -depth 8 "png:$1"
+}
+
+render() {
+    tmp="$img.$$"
+    : >"$log"
+    if render_full "$tmp" 2>>"$log" || { [ -n "$nerd" ] && nerd="" && render_full "$tmp" 2>>"$log"; } ||
+        render_plain "$tmp" 2>>"$log"; then
+        find "$cache" -name '*.png' -delete
+        mv -f "$tmp" "$img"
+    else
+        rm -f "$tmp"
+        echo "не удалось подготовить картинку: $wall ($root)" >>"$log"
+    fi
+}
+
+if [ ! -f "$wall" ]; then
+    echo "обои не найдены: ${wall:-пусто}" >"$log"
+elif ! command -v "$im" >/dev/null 2>&1; then
+    echo "нет imagemagick" >"$log"
+elif [ -z "$root" ]; then
+    echo "xrandr не вернул размер экрана" >"$log"
+elif [ ! -s "$img" ] || [ -n "$(find "$wall" -newer "$img" 2>/dev/null)" ]; then
+    render
+fi
+
+[ "$1" = "--prepare" ] && exit 0
+
+if command -v flock >/dev/null; then
+    exec 9>"$cache/.running"
+    flock -n 9 || exit 0
+fi
+
+command -v kbd-latin >/dev/null && kbd-latin
+
+# с picom картинка блокировки замирает: часы стоят, а после гашения экрана
+# остаётся старый кадр рабочего стола, хотя ввод уже захвачен
+picom_was=$(pgrep -u "$(id -u)" -x picom)
+restore() {
+    pkill -CONT -x sxhkd
+    if [ -n "$picom_was" ] && ! pgrep -u "$(id -u)" -x picom >/dev/null; then
+        setsid -f picom >/dev/null 2>&1 9>&-
+    fi
+    dunstctl set-paused false 2>/dev/null
+}
+trap restore EXIT
+trap 'exit 1' INT TERM HUP
+
+pkill -STOP -x sxhkd
+dunstctl set-paused true 2>/dev/null
+playerctl -a pause 2>/dev/null
+if [ -n "$picom_was" ]; then
+    pkill -u "$(id -u)" -x picom
+    i=0
+    while pgrep -u "$(id -u)" -x picom >/dev/null && [ $i -lt 20 ]; do
+        sleep 0.1
+        i=$((i + 1))
+    done
+fi
+
+font="JetBrainsMono Nerd Font"
+bin=""
+for b in "$(command -v i3lock-dots)" /usr/local/bin/i3lock-dots /usr/bin/i3lock-dots "$(command -v i3lock)"; do
+    [ -n "$b" ] && [ -x "$b" ] && { bin=$b; break; }
+done
+[ -n "$bin" ] || { notify-send -u critical "Блокировка" "i3lock не установлен"; exit 1; }
+
+if "$bin" --version 2>&1 | grep -q 'Cassandra Fox'; then
+    set -- --nofork --ignore-empty-password --show-failed-attempts --color="${bg}ff" \
+        --bar-indicator --bar-base-width=1 --bar-max-height=1 --bar-count=1 \
+        --bar-color=00000000 --keyhl-color=00000000 --bshl-color=00000000 \
+        --ringver-color=00000000 --ringwrong-color=00000000 \
+        --clock --force-clock --time-str="%H:%M" --date-str="%A, %d %B" \
+        --time-pos="x+w/2:y+h/2-30" --date-pos="tx:ty+44" \
+        --time-color="${fg}ff" --date-color="${fg}ff" --time-size=96 --date-size=22 \
+        --time-font="$font:style=Bold" --date-font="$font" \
+        --verif-text="Проверка..." --wrong-text="Неверный пароль" --noinput-text="" \
+        --lock-text="" --lockfailed-text="Не удалось заблокировать" \
+        --verif-pos="x+w/2-$((fw / 2 - 44)):y+h/2+$((88 + fh / 2 + 3))" --verif-align=1 \
+        --wrong-pos="x+w/2-$((fw / 2 - 44)):y+h/2+$((88 + fh / 2 + 3))" --wrong-align=1 \
+        --verif-color="${accent}ff" --wrong-color="${wrong}ff" --verif-size=15 --wrong-size=15 \
+        --verif-font="$font" --wrong-font="$font" \
+        --keylayout 2 --layout-pos="x+50:y+h-24" --layout-align=1 \
+        --layout-color="${muted}ff" --layout-size=14 --layout-font="$font" \
+        --modif-pos="x+90:y+h-24" --modif-align=1 --modif-color="${wrong}ff" \
+        --modif-size=14 \
+        --pass-media-keys --pass-volume-keys --pass-screen-keys
+    if grep -aq I3LOCK_DOTS "$bin" 2>/dev/null; then
+        dots=yes
+        export I3LOCK_DOTS="● " I3LOCK_DOTS_SIZE=12 I3LOCK_DOTS_RISE=1 \
+            I3LOCK_CAPS="Caps Lock" I3LOCK_DOTS_SHIFT=$((fw / 2 - 44))
+        set -- "$@" --greeter-text="Пароль" --greeter-align=1 \
+            --greeter-pos="x+w/2-$((fw / 2 - 44)):y+h/2+$((88 + fh / 2 + 3))" \
+            --greeter-color="${muted}99" --greeter-size=15 --greeter-font="$font"
+    fi
+else
+    set -- --nofork --ignore-empty-password --no-unlock-indicator --color="$bg"
+fi
+[ -s "$img" ] && set -- "$@" --image="$img"
+
+printf '%s %s точки=%s фон=%s\n' "$(date '+%F %T')" "$bin" "${dots:-нет}" "$([ -s "$img" ] && echo да || echo нет)" >"$cache/last-run"
+"$bin" "$@" 2>>"$log"

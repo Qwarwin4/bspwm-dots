@@ -1,0 +1,19 @@
+# Обычные программы. Установщик спрашивает про каждую группу: [ключ] описание
+
+[firefox] Firefox
+firefox
+
+[thunar] Thunar с архивами, миниатюрами и съёмными дисками
+thunar thunar-archive-plugin thunar-volman tumbler ffmpegthumbnailer file-roller
+
+[media] mpv, просмотр картинок, редактор текста
+mpv ristretto mousepad
+
+[docs] Zathura для PDF и DjVu
+zathura zathura-pdf-mupdf zathura-djvu
+
+[tools] Скриншоты, пипетка, диски
+flameshot gpick gnome-disk-utility gparted
+
+[telegram] Telegram
+telegram-desktop

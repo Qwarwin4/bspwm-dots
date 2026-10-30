@@ -1,0 +1,105 @@
+* {
+    bg: #1e222a;
+    bg-alt: #2b2f37;
+    fg: #d9e0ee;
+    muted: #646870;
+    accent: #7aa2f7;
+    select: #f28fad;
+    border-col: #989cfa;
+
+    background-color: transparent;
+    text-color: @fg;
+    spacing: 0;
+}
+
+window {
+    width: 640px;
+    border: 3px;
+    border-color: @border-col;
+    border-radius: 10px;
+    background-color: @bg;
+    location: center;
+    anchor: center;
+}
+
+mainbox {
+    padding: 20px;
+    spacing: 12px;
+    children: [ inputbar, listview, mode-switcher ];
+}
+
+inputbar {
+    spacing: 10px;
+    children: [ prompt, entry ];
+}
+
+prompt {
+    padding: 6px 10px;
+    border-radius: 5px;
+    background-color: @accent;
+    text-color: @bg;
+}
+
+entry {
+    padding: 6px 4px;
+    placeholder: "Search";
+    placeholder-color: @muted;
+    cursor: text;
+}
+
+listview {
+    columns: 2;
+    lines: 7;
+    fixed-height: true;
+    scrollbar: false;
+    cycle: true;
+    spacing: 4px;
+}
+
+element {
+    padding: 6px 8px;
+    spacing: 10px;
+    border-radius: 6px;
+}
+
+element selected {
+    background-color: @bg-alt;
+    text-color: @select;
+}
+
+element-icon {
+    size: 24px;
+    background-color: inherit;
+}
+
+element-text {
+    background-color: inherit;
+    text-color: inherit;
+    vertical-align: 0.5;
+}
+
+mode-switcher {
+    spacing: 8px;
+}
+
+button {
+    padding: 8px;
+    border-radius: 6px;
+    background-color: @bg-alt;
+    text-color: @muted;
+}
+
+button selected {
+    background-color: @bg-alt;
+    text-color: @accent;
+}
+
+message {
+    padding: 8px;
+    border-radius: 6px;
+    background-color: @bg-alt;
+}
+
+textbox {
+    text-color: @fg;
+}

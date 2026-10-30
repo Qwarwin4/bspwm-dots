@@ -1,0 +1,42 @@
+#!/bin/sh
+# ExecStartPre для ly: обои пользователя -> .dur под размер tty
+
+tty=${1:-tty2}
+lib=/usr/local/lib/bspwm-dots
+state=/var/lib/bspwm-dots
+udir=$state/user
+out=$state/ly.dur
+
+ensure() {
+    gzip -t "$out" 2>/dev/null || install -m 644 "$lib/ly-empty.dur" "$out"
+    exit 0
+}
+
+[ -d "$udir" ] || ensure
+owner=$(stat -c %U "$udir")
+[ "$owner" != root ] || ensure
+
+as() { timeout 30 runuser -u "$owner" -- "$@"; }
+
+img=$(as head -n1 "$udir/wallpaper" 2>/dev/null)
+[ -n "$img" ] || ensure
+
+size=$(stty -F "/dev/$tty" size 2>/dev/null) || ensure
+rows=${size% *}
+cols=${size#* }
+{ [ "$rows" -gt 0 ] && [ "$cols" -gt 0 ]; } 2>/dev/null || ensure
+
+key="$img|$cols|$rows|$(as stat -c %Y "$img" 2>/dev/null)|$(md5sum </etc/vtrgb 2>/dev/null)"
+if [ -f "$out" ] && [ "$(cat "$state/ly.key" 2>/dev/null)" = "$key" ]; then
+    ensure
+fi
+
+tmp=$(mktemp "$state/ly.XXXXXX")
+if as "$lib/ly-dur" "$img" "$cols" "$rows" /etc/vtrgb "$udir/ly.dur" &&
+    as cat "$udir/ly.dur" >"$tmp" && gzip -t "$tmp" 2>/dev/null; then
+    chmod 644 "$tmp"
+    mv -f "$tmp" "$out"
+    (umask 077; printf '%s\n' "$key" >"$state/ly.key")
+fi
+rm -f "$tmp"
+ensure

@@ -1,0 +1,65 @@
+"$schema" = "https://starship.rs/config-schema.json"
+
+add_newline = true
+format = """
+$os$directory$git_branch$git_status$python$rust$golang$nodejs$c$cmd_duration
+$character"""
+
+[os]
+disabled = false
+style = "bold #61afef"
+format = "[$symbol ]($style)"
+
+[os.symbols]
+Arch = ""
+Linux = ""
+
+[directory]
+style = "bold #989cfa"
+truncation_length = 3
+truncation_symbol = "…/"
+read_only = " "
+
+[git_branch]
+symbol = " "
+style = "bold #f5c2e7"
+format = "[ $symbol$branch]($style)"
+
+[git_status]
+style = "#f38ba8"
+format = "[ $all_status$ahead_behind]($style)"
+
+[python]
+symbol = " "
+style = "#f9e2af"
+format = "[ $symbol$version( \\($virtualenv\\))]($style)"
+
+[rust]
+symbol = " "
+style = "#fab387"
+format = "[ $symbol$version]($style)"
+
+[golang]
+symbol = " "
+style = "#89dceb"
+format = "[ $symbol$version]($style)"
+
+[nodejs]
+symbol = " "
+style = "#a6e3a1"
+format = "[ $symbol$version]($style)"
+
+[c]
+symbol = " "
+style = "#89b4fa"
+format = "[ $symbol$version]($style)"
+
+[cmd_duration]
+min_time = 2000
+style = "#646870"
+format = "[  $duration]($style)"
+
+[character]
+success_symbol = "[❯](bold #a6e3a1)"
+error_symbol = "[❯](bold #f38ba8)"
+vimcmd_symbol = "[❮](bold #a6e3a1)"

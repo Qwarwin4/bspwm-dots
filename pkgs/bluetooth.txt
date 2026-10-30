@@ -1,0 +1,3 @@
+# Ставится только если найден bluetooth-адаптер
+
+bluez bluez-utils blueman bluetuith

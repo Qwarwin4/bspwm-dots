@@ -1,0 +1,11 @@
+[SddmGreeterTheme]
+Name=bspwm-dots
+Description=Экран входа в стиле bspwm-dots: текущие обои, часы, палитра системы
+Author=bspwm-dots
+Type=sddm-theme
+Version=1.0
+MainScript=Main.qml
+ConfigFile=theme.conf
+Theme-Id=bspwm-dots
+Theme-API=2.0
+QtVersion=6

@@ -1,0 +1,38 @@
+#!/bin/sh
+
+run() {
+    pgrep -x "$1" >/dev/null && return
+    command -v "$1" >/dev/null || return
+    "$@" >/dev/null 2>&1 &
+}
+
+[ -f "$HOME/.Xresources" ] && xrdb -nocpp -merge "$HOME/.Xresources"
+xsetroot -cursor_name left_ptr
+xset s 900 900 2>/dev/null
+xset -dpms 2>/dev/null
+
+wallpaper
+"$HOME/.config/polybar/launch.sh" &
+
+run picom
+run dunst
+run clipmenud
+run xss-lock --transfer-sleep-lock -- lock
+run udiskie --tray --no-notify
+run redshift
+run battery-alert
+
+for agent in \
+    /usr/lib/polkit-gnome/polkit-gnome-authentication-agent-1 \
+    /usr/lib/xfce-polkit/xfce-polkit \
+    /usr/lib/polkit-kde-authentication-agent-1
+do
+    if [ -x "$agent" ]; then
+        pgrep -f "$agent" >/dev/null || "$agent" &
+        break
+    fi
+done
+
+[ -n "$(ls -A /sys/class/bluetooth 2>/dev/null)" ] && run blueman-applet
+
+[ -x "$HOME/.config/bspwm/autostart.local" ] && "$HOME/.config/bspwm/autostart.local" &

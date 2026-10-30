@@ -1,0 +1,38 @@
+#!/bin/sh
+# столы по мониторам; своя схема выходов — ~/.config/bspwm/screens
+
+if [ -x "$HOME/.config/bspwm/screens" ]; then
+    "$HOME/.config/bspwm/screens"
+elif command -v autorandr >/dev/null && autorandr --detected >/dev/null 2>&1; then
+    autorandr --change
+else
+    prim=$(xrandr --query | awk '/ connected primary/{print $1; exit}')
+    [ -z "$prim" ] && prim=$(xrandr --query | awk '/ connected/{print $1; exit}')
+    if [ -n "$prim" ]; then
+        xrandr --output "$prim" --auto --primary
+        prev=$prim
+        for out in $(xrandr --query | awk '/ connected/{print $1}'); do
+            [ "$out" = "$prim" ] && continue
+            xrandr --output "$out" --auto --right-of "$prev"
+            prev=$out
+        done
+        for out in $(xrandr --query | awk '/ disconnected/{print $1}'); do
+            xrandr --output "$out" --off 2>/dev/null
+        done
+    fi
+fi
+
+prim=$(bspc query -M -m primary --names 2>/dev/null)
+[ -z "$prim" ] && prim=$(bspc query -M --names | head -n1)
+others=$(bspc query -M --names | grep -vx "$prim")
+
+if [ -z "$others" ]; then
+    bspc monitor "$prim" -d 1 2 3 4 5 6 7
+else
+    bspc monitor "$prim" -d 1 2 3 4 5
+    n=6
+    for m in $others; do
+        bspc monitor "$m" -d "$n" "$((n + 1))" "$((n + 2))"
+        n=$((n + 3))
+    done
+fi

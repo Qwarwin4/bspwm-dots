@@ -1,0 +1,46 @@
+#!/bin/sh
+# brightness up|down — через systemd-logind, без группы video
+
+sys=${BACKLIGHT_SYS:-/sys/class/backlight}
+hw="$HOME/.config/bspwm/hardware"
+# shellcheck disable=SC1090
+[ -f "$hw" ] && . "$hw"
+step=5
+
+case "$1" in
+    up) sign=1 ;;
+    down) sign=-1 ;;
+    *) brightnessctl -c backlight -m | cut -d, -f4; exit 0 ;;
+esac
+
+set_level() {
+    busctl call org.freedesktop.login1 /org/freedesktop/login1/session/auto \
+        org.freedesktop.login1.Session SetBrightness ssu backlight "$1" "$2" 2>&1 ||
+        brightnessctl -q -d "$1" set "$2" 2>&1
+}
+
+pct=""
+err=""
+for d in "$sys"/*; do
+    [ -r "$d/max_brightness" ] || continue
+    case " ${BRIGHTNESS_DEVICES:-${d##*/}} " in *" ${d##*/} "*) ;; *) continue ;; esac
+    max=$(cat "$d/max_brightness")
+    cur=$(cat "$d/brightness")
+    [ "$max" -gt 0 ] || continue
+    new=$((cur + sign * (max * step / 100 > 0 ? max * step / 100 : 1)))
+    low=$((max / 100 > 0 ? max / 100 : 1))
+    [ "$new" -lt "$low" ] && new=$low
+    [ "$new" -gt "$max" ] && new=$max
+    if out=$(set_level "${d##*/}" "$new"); then
+        pct=$((new * 100 / max))
+    else
+        err=$out
+    fi
+done
+
+if [ -z "$pct" ]; then
+    notify-send -u critical -i display-brightness-symbolic "Яркость не меняется" "${err:-подсветка не найдена}"
+    exit 1
+fi
+
+dunstify -a brightness -u low -r 9903 -i display-brightness-symbolic -h "int:value:$pct" "Brightness $pct%"

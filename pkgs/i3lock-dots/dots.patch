@@ -1,0 +1,103 @@
+diff --git a/i3lock.c b/i3lock.c
+index 8406fa6..71deb5f 100644
+--- a/i3lock.c
++++ b/i3lock.c
+@@ -233,6 +233,10 @@ bool show_failed_attempts = false;
+ bool retry_verification = false;
+ 
+ static struct xkb_state *xkb_state;
++
++int caps_lock_active(void) {
++    return xkb_state && xkb_state_mod_name_is_active(xkb_state, XKB_MOD_NAME_CAPS, XKB_STATE_MODS_LOCKED) > 0;
++}
+ static struct xkb_context *xkb_context;
+ static struct xkb_keymap *xkb_keymap;
+ #if XKBCOMPOSE == 1
+@@ -2412,7 +2416,7 @@ int main(int argc, char *argv[]) {
+ 
+ #ifndef __OpenBSD__
+     /* Initialize PAM */
+-    if ((ret = pam_start("i3lock", username, &conv, &pam_handle)) != PAM_SUCCESS)
++    if ((ret = pam_start("i3lock-dots", username, &conv, &pam_handle)) != PAM_SUCCESS)
+         errx(EXIT_FAILURE, "PAM: %s", pam_strerror(pam_handle, ret));
+ 
+     if ((ret = pam_set_item(pam_handle, PAM_TTY, getenv("DISPLAY"))) != PAM_SUCCESS)
+diff --git a/unlock_indicator.c b/unlock_indicator.c
+index e10984a..1b56577 100644
+--- a/unlock_indicator.c
++++ b/unlock_indicator.c
+@@ -47,6 +47,7 @@ extern bool debug_mode;
+ /* The current position in the input buffer. Useful to determine if any
+  * characters of the password have already been entered or not. */
+ extern int input_position;
++extern int caps_lock_active(void);
+ 
+ /* The lock window. */
+ extern xcb_window_t win;
+@@ -968,6 +969,44 @@ void render_lock(uint32_t *resolution, xcb_drawable_t drawable) {
+         }
+     }
+ 
++    double dots_shift = 0, dots_rise = 0;
++    if (greeter_text && getenv("I3LOCK_DOTS")) {
++        if (auth_state == STATE_AUTH_VERIFY || auth_state == STATE_AUTH_WRONG) {
++            draw_data.greeter_text.show = false;
++            memset(draw_data.greeter_text.str, 0, sizeof(draw_data.greeter_text.str));
++        } else if (input_position > 0) {
++            const char *dot = getenv("I3LOCK_DOTS");
++            size_t len = strlen(dot), off = 0;
++            int n = input_position > 24 ? 24 : input_position;
++            memset(draw_data.greeter_text.str, 0, sizeof(draw_data.greeter_text.str));
++            for (int k = 0; k < n && len && off + len < sizeof(draw_data.greeter_text.str) - 1; k++) {
++                memcpy(draw_data.greeter_text.str + off, dot, len);
++                off += len;
++            }
++            draw_data.greeter_text.color = time16;
++            if (getenv("I3LOCK_DOTS_SIZE"))
++                draw_data.greeter_text.size = atof(getenv("I3LOCK_DOTS_SIZE"));
++            if (getenv("I3LOCK_DOTS_RISE"))
++                dots_rise = atof(getenv("I3LOCK_DOTS_RISE"));
++            if (getenv("I3LOCK_DOTS_SHIFT")) {
++                dots_shift = atof(getenv("I3LOCK_DOTS_SHIFT"));
++                draw_data.greeter_text.align = 0;
++            }
++        }
++    }
++
++    if (getenv("I3LOCK_CAPS") && !draw_data.mod_text.show && caps_lock_active()) {
++        draw_data.mod_text.show = true;
++        memset(draw_data.mod_text.str, 0, sizeof(draw_data.mod_text.str));
++        strncpy(draw_data.mod_text.str, getenv("I3LOCK_CAPS"), sizeof(draw_data.mod_text.str) - 1);
++        draw_data.mod_text.size = modifier_size;
++        draw_data.mod_text.outline_width = modifieroutlinewidth;
++        draw_data.mod_text.font = get_font_face(WRONG_FONT);
++        draw_data.mod_text.align = modif_align;
++        draw_data.mod_text.color = modif16;
++        draw_data.mod_text.outline_color = modifoutline16;
++    }
++
+     // initialize positioning vars
+     double screen_x = 0, screen_y = 0,
+            width = 0, height = 0;
+@@ -1050,8 +1089,8 @@ void render_lock(uint32_t *resolution, xcb_drawable_t drawable) {
+             draw_data.date_text.y = te_eval(te_date_y_expr);
+             draw_data.keylayout_text.x = te_eval(te_layout_x_expr);
+             draw_data.keylayout_text.y = te_eval(te_layout_y_expr);
+-            draw_data.greeter_text.x = te_eval(te_greeter_x_expr);
+-            draw_data.greeter_text.y = te_eval(te_greeter_y_expr);
++            draw_data.greeter_text.x = te_eval(te_greeter_x_expr) + dots_shift;
++            draw_data.greeter_text.y = te_eval(te_greeter_y_expr) - dots_rise;
+ 
+             switch (auth_state) {
+                 case STATE_AUTH_VERIFY:
+@@ -1121,8 +1160,8 @@ void render_lock(uint32_t *resolution, xcb_drawable_t drawable) {
+         draw_data.date_text.y = te_eval(te_date_y_expr);
+         draw_data.keylayout_text.x = te_eval(te_layout_x_expr);
+         draw_data.keylayout_text.y = te_eval(te_layout_y_expr);
+-        draw_data.greeter_text.x = te_eval(te_greeter_x_expr);
+-        draw_data.greeter_text.y = te_eval(te_greeter_y_expr);
++        draw_data.greeter_text.x = te_eval(te_greeter_x_expr) + dots_shift;
++        draw_data.greeter_text.y = te_eval(te_greeter_y_expr) - dots_rise;
+         switch (auth_state) {
+             case STATE_AUTH_VERIFY:
+             case STATE_AUTH_LOCK:

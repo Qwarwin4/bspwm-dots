@@ -1,0 +1,7 @@
+/dist/
+*.bak
+*.orig
+*.swp
+*.log
+.DS_Store
+__pycache__/

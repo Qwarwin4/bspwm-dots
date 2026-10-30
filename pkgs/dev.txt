@@ -1,0 +1,22 @@
+# Разработка. Установщик спрашивает про каждую группу: [ключ] описание
+
+[editor] Neovim, lazygit, GitHub CLI
+neovim tree-sitter-cli lazygit github-cli
+
+[c] C/C++: gcc, clang, cmake, ninja, gdb
+gcc clang cmake ninja make gdb
+
+[python] Python и pip
+python python-pip python-pipx
+
+[node] Node.js и npm
+nodejs npm
+
+[rust] Rust через rustup
+rustup
+
+[go] Go
+go
+
+[docker] Docker и docker compose
+docker docker-compose docker-buildx

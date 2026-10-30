@@ -1,0 +1,7 @@
+#!/bin/sh
+
+if pgrep -u "$(id -u)" -x polybar >/dev/null; then
+    polybar-msg cmd toggle >/dev/null 2>&1
+else
+    exec "$HOME/.config/polybar/launch.sh"
+fi

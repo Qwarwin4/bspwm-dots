@@ -1,0 +1,40 @@
+#!/bin/sh
+# volume up|down|mute|mic
+
+step=5
+
+notify() {
+    vol=$(pamixer --get-volume)
+    if [ "$(pamixer --get-mute)" = "true" ] || [ "$vol" -eq 0 ]; then
+        icon=audio-volume-muted
+        text="Mute"
+    elif [ "$vol" -lt 34 ]; then
+        icon=audio-volume-low
+        text="Volume $vol%"
+    elif [ "$vol" -lt 67 ]; then
+        icon=audio-volume-medium
+        text="Volume $vol%"
+    else
+        icon=audio-volume-high
+        text="Volume $vol%"
+    fi
+    dunstify -a volume -u low -r 9901 -i "$icon" -h "int:value:$vol" "$text"
+}
+
+case "$1" in
+    up) pamixer -u -i "$step" --allow-boost --set-limit 150 ;;
+    down) pamixer -u -d "$step" ;;
+    mute) pamixer -t ;;
+    mic)
+        pamixer --default-source -t
+        if [ "$(pamixer --default-source --get-mute)" = "true" ]; then
+            dunstify -a volume -u low -r 9902 -i microphone-sensitivity-muted "Mic off"
+        else
+            dunstify -a volume -u low -r 9902 -i microphone-sensitivity-high "Mic on"
+        fi
+        exit 0
+        ;;
+    *) pamixer --get-volume; exit 0 ;;
+esac
+
+notify

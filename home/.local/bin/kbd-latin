@@ -1,0 +1,16 @@
+#!/bin/sh
+# переключить на первую раскладку
+
+q=$(setxkbmap -query)
+layout=$(echo "$q" | awk '/^layout:/{print $2}')
+variant=$(echo "$q" | awk '/^variant:/{print $2}')
+options=$(echo "$q" | awk '/^options:/{print $2}')
+
+[ -z "$layout" ] && exit 0
+case "$layout" in *,*) ;; *) exit 0 ;; esac
+
+set -- -layout "$layout"
+[ -n "$variant" ] && set -- "$@" -variant "$variant"
+set -- "$@" -option ""
+[ -n "$options" ] && set -- "$@" -option "$options"
+setxkbmap "$@"

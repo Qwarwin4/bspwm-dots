@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<actions>
+<action>
+	<icon>utilities-terminal</icon>
+	<name>Открыть терминал здесь</name>
+	<submenu></submenu>
+	<unique-id>1759840000000001</unique-id>
+	<command>alacritty --working-directory %f</command>
+	<description>Терминал в этой папке</description>
+	<range></range>
+	<patterns>*</patterns>
+	<startup-notify/>
+	<directories/>
+</action>
+<action>
+	<icon>nvim</icon>
+	<name>Открыть в Neovim</name>
+	<submenu></submenu>
+	<unique-id>1759840000000002</unique-id>
+	<command>alacritty -e nvim %F</command>
+	<description>Редактировать в nvim</description>
+	<range></range>
+	<patterns>*</patterns>
+	<text-files/>
+	<other-files/>
+</action>
+<action>
+	<icon>preferences-desktop-wallpaper</icon>
+	<name>Сделать обоями</name>
+	<submenu></submenu>
+	<unique-id>1759840000000003</unique-id>
+	<command>sh -c &apos;&quot;$HOME/.local/bin/wallpaper&quot; &quot;$1&quot;&apos; _ %f</command>
+	<description>Обои рабочего стола, экрана входа и блокировки</description>
+	<range>1-1</range>
+	<patterns>*.jpg;*.jpeg;*.png;*.webp;*.JPG;*.JPEG;*.PNG;*.WEBP</patterns>
+	<image-files/>
+</action>
+<action>
+	<icon>edit-copy</icon>
+	<name>Скопировать путь</name>
+	<submenu></submenu>
+	<unique-id>1759840000000004</unique-id>
+	<command>sh -c &apos;printf &quot;%%s&quot; &quot;$1&quot; | xclip -selection clipboard&apos; _ %f</command>
+	<description>Полный путь в буфер обмена</description>
+	<range>1-1</range>
+	<patterns>*</patterns>
+	<directories/>
+	<audio-files/>
+	<image-files/>
+	<other-files/>
+	<text-files/>
+	<video-files/>
+</action>
+<action>
+	<icon>system-file-manager</icon>
+	<name>Открыть от root</name>
+	<submenu></submenu>
+	<unique-id>1759840000000005</unique-id>
+	<command>sh -c &apos;pkexec env DISPLAY=&quot;$DISPLAY&quot; XAUTHORITY=&quot;$XAUTHORITY&quot; thunar &quot;$1&quot;&apos; _ %f</command>
+	<description>Thunar с правами администратора</description>
+	<range></range>
+	<patterns>*</patterns>
+	<startup-notify/>
+	<directories/>
+</action>
+<action>
+	<icon>system-search</icon>
+	<name>Найти здесь</name>
+	<submenu></submenu>
+	<unique-id>1759840000000006</unique-id>
+	<command>alacritty --working-directory %f -e sh -c &apos;f=$(fd --hidden --exclude .git | fzf) &amp;&amp; xdg-open &quot;$f&quot;&apos;</command>
+	<description>Поиск файла через fzf</description>
+	<range></range>
+	<patterns>*</patterns>
+	<directories/>
+</action>
+</actions>

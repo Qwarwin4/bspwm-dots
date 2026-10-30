@@ -1,0 +1,149 @@
+:root {
+  --zp-bg: #1e222a;
+  --zp-bg-alt: #2b2f37;
+  --zp-fg: #d9e0ee;
+  --zp-muted: #8b919a;
+  --zp-accent: #989cfa;
+  --zp-tab: #3a3f5c;
+  --zp-url: #98c1d9;
+  --zp-font: "JetBrainsMono Nerd Font", monospace;
+
+  --toolbar-bgcolor: var(--zp-bg) !important;
+  --toolbar-color: var(--zp-fg) !important;
+  --toolbar-field-background-color: var(--zp-bg-alt) !important;
+  --toolbar-field-focus-background-color: var(--zp-bg-alt) !important;
+  --toolbar-field-color: var(--zp-url) !important;
+  --toolbar-field-focus-color: var(--zp-fg) !important;
+  --toolbar-field-border-color: transparent !important;
+  --toolbar-field-focus-border-color: var(--zp-accent) !important;
+  --toolbarbutton-icon-fill: var(--zp-fg) !important;
+  --lwt-accent-color: var(--zp-bg) !important;
+  --lwt-text-color: var(--zp-fg) !important;
+  --tab-selected-bgcolor: var(--zp-tab) !important;
+  --tab-selected-textcolor: var(--zp-fg) !important;
+  --tab-border-radius: 8px !important;
+  --arrowpanel-background: var(--zp-bg) !important;
+  --arrowpanel-color: var(--zp-fg) !important;
+  --arrowpanel-border-color: var(--zp-bg-alt) !important;
+  --urlbarView-highlight-background: var(--zp-tab) !important;
+  --urlbarView-highlight-color: var(--zp-fg) !important;
+  --sidebar-background-color: var(--zp-bg) !important;
+  --sidebar-text-color: var(--zp-fg) !important;
+  --chrome-content-separator-color: transparent !important;
+}
+
+#navigator-toolbox,
+#TabsToolbar,
+#nav-bar,
+#PersonalToolbar,
+#titlebar {
+  background: var(--zp-bg) !important;
+  border: none !important;
+  box-shadow: none !important;
+}
+
+#nav-bar {
+  padding-block: 4px !important;
+}
+
+.tabbrowser-tab[fadein]:not([selected]):not([pinned]) {
+  min-width: 150px !important;
+  max-width: 150px !important;
+}
+
+.tabbrowser-tab[selected][fadein]:not([pinned]) {
+  min-width: 200px !important;
+  max-width: 200px !important;
+}
+
+.tabbrowser-tab {
+  padding-inline: 3px !important;
+}
+
+.tab-background {
+  border-radius: 8px !important;
+  margin-block: 4px !important;
+  box-shadow: none !important;
+  outline: none !important;
+}
+
+.tabbrowser-tab:not([selected]):hover .tab-background {
+  background-color: var(--zp-bg-alt) !important;
+}
+
+.tabbrowser-tab[selected] .tab-background {
+  background-color: var(--zp-tab) !important;
+}
+
+.tab-label {
+  font-family: var(--zp-font) !important;
+}
+
+.tabbrowser-tab:not([selected]) .tab-label {
+  color: var(--zp-muted) !important;
+}
+
+.tabbrowser-tab[pinned] .tab-label-container {
+  display: none !important;
+}
+
+#tabbrowser-tabs {
+  --tab-loading-fill: var(--zp-accent) !important;
+}
+
+.tab-line,
+.tab-context-line {
+  display: none !important;
+}
+
+#urlbar-background {
+  border-radius: 8px !important;
+  border: none !important;
+  box-shadow: none !important;
+}
+
+#urlbar[focused] #urlbar-background {
+  outline: 2px solid var(--zp-accent) !important;
+  outline-offset: -2px !important;
+}
+
+#urlbar-input {
+  font-family: var(--zp-font) !important;
+  font-weight: 700 !important;
+  text-align: center !important;
+}
+
+#urlbar[focused] #urlbar-input {
+  text-align: start !important;
+}
+
+.urlbarView {
+  font-family: var(--zp-font) !important;
+}
+
+.urlbarView-url {
+  color: var(--zp-url) !important;
+}
+
+toolbarseparator,
+#nav-bar-overflow-button + toolbarseparator {
+  display: none !important;
+}
+
+toolbarbutton {
+  box-shadow: none !important;
+}
+
+#sidebar-splitter {
+  border: none !important;
+  background-color: transparent !important;
+  width: 2px !important;
+}
+
+menupopup,
+panel {
+  --panel-background: var(--zp-bg) !important;
+  --panel-color: var(--zp-fg) !important;
+  --panel-border-color: var(--zp-bg-alt) !important;
+  --panel-border-radius: 8px !important;
+}

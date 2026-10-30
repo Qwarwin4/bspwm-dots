@@ -1,0 +1,30 @@
+Xft.antialias: 1
+Xft.hinting: 1
+Xft.autohint: 0
+Xft.hintstyle: hintslight
+Xft.rgba: rgb
+Xft.lcdfilter: lcddefault
+
+Xcursor.theme: @CURSOR@
+Xcursor.size: 24
+
+*foreground: #adb1b9
+*background: #1e222a
+*cursorColor: #989cfa
+
+*color0: #1e222a
+*color1: #d35f5e
+*color2: #a3be8c
+*color3: #f9de8f
+*color4: #61afef
+*color5: #989cfa
+*color6: #95e1d3
+*color7: #adb1b9
+*color8: #565c64
+*color9: #e06c75
+*color10: #98c379
+*color11: #e5c07b
+*color12: #7aa2f7
+*color13: #c678dd
+*color14: #a4ebf3
+*color15: #e6e8ee

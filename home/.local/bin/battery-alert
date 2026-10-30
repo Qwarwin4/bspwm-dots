@@ -1,0 +1,38 @@
+#!/bin/sh
+
+low=20
+critical=8
+
+bat=""
+for ps in /sys/class/power_supply/*; do
+    [ "$(cat "$ps/type" 2>/dev/null)" = "Battery" ] || continue
+    [ "$(cat "$ps/scope" 2>/dev/null)" = "Device" ] && continue
+    bat=$ps
+    break
+done
+
+[ -z "$bat" ] && exit 0
+
+last=none
+while :; do
+    cap=$(cat "$bat/capacity" 2>/dev/null || echo 100)
+    st=$(cat "$bat/status" 2>/dev/null)
+
+    if [ "$st" = "Discharging" ]; then
+        if [ "$cap" -le "$critical" ] && [ "$last" != critical ]; then
+            notify-send -u critical -i battery-caution "Батарея почти разряжена" "Осталось $cap%"
+            last=critical
+        elif [ "$cap" -le "$low" ] && [ "$last" = none ]; then
+            notify-send -u normal -i battery-low "Низкий заряд" "Осталось $cap%"
+            last=low
+        fi
+    else
+        if [ "$st" = "Full" ] && [ "$last" != full ]; then
+            notify-send -u low -i battery-full-charged "Батарея заряжена"
+            last=full
+        elif [ "$st" = "Charging" ]; then
+            last=none
+        fi
+    fi
+    sleep 60
+done

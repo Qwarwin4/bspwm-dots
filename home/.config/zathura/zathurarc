@@ -1,0 +1,32 @@
+set selection-clipboard clipboard
+set recolor true
+set recolor-keephue true
+set adjust-open width
+set font "JetBrainsMono Nerd Font 11"
+
+set default-bg "#1e1e2e"
+set default-fg "#cdd6f4"
+set statusbar-bg "#2b2f37"
+set statusbar-fg "#cdd6f4"
+set inputbar-bg "#1e1e2e"
+set inputbar-fg "#cdd6f4"
+set notification-bg "#1e1e2e"
+set notification-fg "#cdd6f4"
+set notification-error-bg "#1e1e2e"
+set notification-error-fg "#f38ba8"
+set notification-warning-bg "#1e1e2e"
+set notification-warning-fg "#fab387"
+set highlight-color "rgba(87,82,104,0.5)"
+set highlight-active-color "rgba(245,194,231,0.5)"
+set completion-bg "#2b2f37"
+set completion-fg "#cdd6f4"
+set completion-highlight-bg "#575268"
+set completion-highlight-fg "#cdd6f4"
+set recolor-lightcolor "#1e1e2e"
+set recolor-darkcolor "#cdd6f4"
+set index-bg "#1e1e2e"
+set index-fg "#cdd6f4"
+set index-active-bg "#2b2f37"
+set index-active-fg "#cdd6f4"
+
+map <C-r> recolor
