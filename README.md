@@ -1,32 +1,34 @@
 # bspwm-dots
 
-bspwm для Arch Linux в стиле [ZProger/bspwm-dotfiles](https://github.com/Zproger/bspwm-dotfiles), собранный заново под текущий Arch: PipeWire, picom 12+, polybar 3.7, rofi 2, на выбор zsh, fish или bash, установщик на Python с вопросами и `debug.py` для типичных проблем.
+**English** | [Русский](README.ru.md)
+
+A bspwm setup for Arch Linux in the style of [ZProger/bspwm-dotfiles](https://github.com/Zproger/bspwm-dotfiles), rebuilt from scratch for current Arch: PipeWire, picom 12+, polybar 3.7, rofi 2, your choice of zsh, fish or bash, an interactive Python installer and `debug.py` for common problems.
 
 ![desktop](assets/desktop.jpg)
 
 | | |
 |---|---|
 | WM | bspwm + sxhkd |
-| Бар | polybar |
-| Композитор | picom: blur, скругления, анимации |
-| Меню | rofi: приложения, калькулятор, эмодзи, буфер обмена, питание, Wi‑Fi |
-| Уведомления | dunst |
-| Терминал | alacritty |
-| Оболочка | zsh, fish или bash + starship, fzf, zoxide, eza, bat |
-| Редактор | neovim: lazy.nvim, mason, treesitter, blink.cmp |
-| Вход | SDDM со своей темой |
-| Блокировка | i3lock-dots (i3lock-color с точками и Caps Lock) + xss-lock |
-| Файлы | Thunar, yazi |
-| Браузер | Firefox с userChrome.css |
+| Bar | polybar |
+| Compositor | picom: blur, rounded corners, animations |
+| Menus | rofi: apps, calculator, emoji, clipboard, power, Wi‑Fi |
+| Notifications | dunst |
+| Terminal | alacritty |
+| Shell | zsh, fish or bash + starship, fzf, zoxide, eza, bat |
+| Editor | neovim: lazy.nvim, mason, treesitter, blink.cmp |
+| Login | SDDM with a custom theme |
+| Lock screen | i3lock-dots (i3lock-color with password dots and Caps Lock) + xss-lock |
+| Files | Thunar, yazi |
+| Browser | Firefox with userChrome.css |
 
 <p>
 <img src="assets/login.jpg" width="49%">
 <img src="assets/lock.jpg" width="49%">
 </p>
 
-## Установка
+## Installation
 
-Нужен установленный Arch с интернетом, хватит минимальной установки через `archinstall`.
+You need an installed Arch system with a network connection; a minimal `archinstall` setup is enough.
 
 ```sh
 su -c 'pacman -S --needed git python'
@@ -36,70 +38,70 @@ su -c 'python install.py'
 reboot
 ```
 
-Установщик запускается от root, поэтому пароль по ходу не спрашивается. AUR-пакеты собираются от имени пользователя через временное правило в sudoers, которое удаляется сразу после сборки.
+The installer runs as root, so it never stops to ask for a password. AUR packages are built as your user through a temporary sudoers rule that is removed right after the build.
 
-Что спрашивается:
+What it asks about:
 
-- имя пользователя: под него пишутся конфиги, SDDM сразу предлагает его на экране входа; если такого нет, установщик создаст
-- оболочка: zsh, fish или bash
-- группы программ (Firefox, Thunar, mpv, Zathura, скриншоты, Telegram) и пакеты разработки (Neovim, C/C++, Python, Node, Rust, Go, Docker): номерами через пробел
-- твики Firefox и Thunar, тема Dracula, AUR, обои ZProger
-- раскладки (по умолчанию из локали, переключение Alt+Shift)
-- батарея и адаптер питания: установщик сам проходит по `/sys/class/power_supply` и спрашивает, если их несколько
-- подсветка и клавиши яркости: можно нажать клавиши, и установщик сам поймёт, что они присылают (`XF86MonBrightness`, `F3`/`F4` и т.п.)
-- драйвер NVIDIA, если найдена видеокарта; автовход в SDDM
+- user name: configs are written for this user and SDDM preselects it on the login screen; if the user doesn't exist, the installer can create it
+- shell: zsh, fish or bash
+- app groups (Firefox, Thunar, mpv, Zathura, screenshots, Telegram) and development packages (Neovim, C/C++, Python, Node, Rust, Go, Docker), picked by number
+- Firefox and Thunar tweaks, Dracula theme, AUR, ZProger wallpaper pack
+- keyboard layouts (defaults from your locale, switched with Alt+Shift)
+- battery and power adapter: found in `/sys/class/power_supply`, you are asked only if there are several
+- backlight and brightness keys: press the keys and the installer detects what they send (`XF86MonBrightness`, `F3`/`F4`, etc.)
+- NVIDIA driver if an NVIDIA card is present; SDDM autologin
 
-SDDM с темой ставится всегда, другой экран входа (ly и т.п.) отключается. Сами определяются микрокод, видео, виртуалка, bluetooth, мониторы и координаты для redshift по часовому поясу.
+SDDM with the theme is always installed, any other display manager (ly etc.) is disabled. Microcode, GPU drivers, VM guest tools, bluetooth, monitors and redshift coordinates (from your time zone) are detected automatically.
 
 ```
 python install.py -h
-  -u, --user NAME        пользователь, без вопроса
-  -y, --yes              без вопросов, всё по умолчанию
+  -u, --user NAME        user, without asking
+  -y, --yes              no questions, all defaults
       --shell zsh|fish|bash
       --no-aur
-      --lock             только экран блокировки
-      --flameshot        только скриншоты (flameshot)
+      --lock             lock screen only
+      --flameshot        screenshots (flameshot) only
 ```
 
-Старые конфиги сохраняются в `~/.dots-backup/<дата>/`, лог лежит в `/var/log/bspwm-dots-install.log`. Повторный запуск ничего не ломает. Найденное железо записывается в `~/.config/bspwm/hardware`, его можно править руками.
+Existing configs are backed up to `~/.dots-backup/<date>/`, the log goes to `/var/log/bspwm-dots-install.log`. Running it again is safe. Detected hardware is written to `~/.config/bspwm/hardware`, which you can edit by hand.
 
-## Если что-то не работает
+## Troubleshooting
 
 ```sh
-python debug.py              # проверить всё и предложить исправления
-python debug.py lock         # только блокировку: session lock brightness panel sddm system
-python debug.py --fix        # исправить всё без вопросов
-python debug.py --keys       # заново определить клавиши яркости нажатием
-python debug.py --report     # отчёт в ~/bspwm-debug.txt
+python debug.py              # check everything and offer fixes
+python debug.py lock         # one section: session lock brightness panel sddm system
+python debug.py --fix        # fix everything without asking
+python debug.py --keys       # re-detect brightness keys by pressing them
+python debug.py --report     # write a report to ~/bspwm-debug.txt
 ```
 
-Запускать из-под пользователя в терминале сессии bspwm. Что требует root (сборка i3lock-dots, пакеты, SDDM), спросит пароль через sudo.
+Run it as your user from a terminal inside the bspwm session. Anything that needs root (building i3lock-dots, packages, SDDM) asks for your password via sudo.
 
-## Отдельные скрипты
+## Standalone scripts
 
-Для уже настроенной системы есть самостоятельные скрипты, их можно скачать из Releases или собрать через `tools/bundle.sh`:
+For an already configured system there are self-contained scripts. Build them with `tools/bundle.sh` (they end up in `dist/`):
 
-| Скрипт | Что делает |
+| Script | What it does |
 |---|---|
-| `switch-to-sddm.sh` | ставит SDDM с темой, отключает ly или другой DM, обновляет `wallpaper` и `lock` |
-| `firefox-thunar-tweaks.sh` | твики Firefox и Thunar, тема и иконки Dracula |
-| `lock-fix.sh` | экран блокировки: точки в поле пароля и Caps Lock |
-| `flameshot-fix.sh` | скриншоты: flameshot 14 снимает экран напрямую через X11 |
+| `switch-to-sddm.sh` | installs SDDM with the theme, disables ly or another DM, updates `wallpaper` and `lock` |
+| `firefox-thunar-tweaks.sh` | Firefox and Thunar tweaks, Dracula theme and icons |
+| `lock-fix.sh` | lock screen: password dots and Caps Lock |
+| `flameshot-fix.sh` | screenshots: makes flameshot 14 capture through X11 directly |
 
 ```sh
 chmod +x lock-fix.sh
 ./lock-fix.sh
 ```
 
-Эти скрипты запускаются от обычного пользователя: права root попросят сами, через sudo или пароль root.
+These run as a regular user and ask for root themselves, via sudo or the root password.
 
-Внутри репозитория то же самое делают `scripts/sddm.sh`, `scripts/tweaks.sh` и `install.py --lock`: они запускаются только от root (`su -c ...`), у всех есть `-h`.
+Inside the repository the same jobs are done by `scripts/sddm.sh`, `scripts/tweaks.sh` and `install.py --lock`; those run only as root (`su -c ...`) and all have `-h`.
 
-## Экран входа
+## Login screen
 
-Тема SDDM лежит в `sddm/bspwm-dots`. На фоне текущие обои, часы, дата, выбор сессии, раскладка и кнопки питания. Обои меняются вместе с рабочим столом: `wallpaper` кладёт копию в `/var/lib/bspwm-dots/user/background.jpg`, потому что SDDM не может читать домашнюю папку. Цвета, шрифт и затемнение настраиваются в `/usr/share/sddm/themes/bspwm-dots/theme.conf`.
+The SDDM theme lives in `sddm/bspwm-dots`: your current wallpaper, clock, date, session picker, keyboard layout and power buttons. The background follows the desktop: `wallpaper` copies the image to `/var/lib/bspwm-dots/user/background.jpg`, since SDDM can't read your home directory. Colors, font and dimming are set in `/usr/share/sddm/themes/bspwm-dots/theme.conf`.
 
-Проверить тему без выхода из сессии:
+Preview the theme without logging out:
 
 ```sh
 sddm-greeter-qt6 --test-mode --theme /usr/share/sddm/themes/bspwm-dots
@@ -107,110 +109,115 @@ sddm-greeter-qt6 --test-mode --theme /usr/share/sddm/themes/bspwm-dots
 
 ### ly
 
-Если вместо SDDM нужен ly: `su -c ./scripts/ly.sh` настроит палитру консоли под цвета `~/.Xresources` (`/etc/vtrgb`, `vtrgb.service`) и тему ly в 16 цветах, с обоями полублоками или анимацией (`LY_ANIMATION=doom|matrix|colormix|gameoflife|none`). Сам ly ставится и включается вручную.
+If you prefer ly over SDDM: `su -c ./scripts/ly.sh` sets the console palette to your `~/.Xresources` colors (`/etc/vtrgb`, `vtrgb.service`) and configures a 16-color ly theme with the wallpaper drawn in half-blocks or an animation (`LY_ANIMATION=doom|matrix|colormix|gameoflife|none`). Installing and enabling ly itself is up to you.
 
-## Блокировка экрана
+## Lock screen
 
-`Super + Shift + L`, а также сама после 15 минут простоя и перед сном. Фон из размытых текущих обоев, часы, дата и поле пароля в стиле экрана входа SDDM: подсказка «Пароль», точки при вводе, «Проверка...» и «Неверный пароль». Слева внизу раскладка и индикатор Caps Lock, он меняется сразу при нажатии. Перед блокировкой включается латиница.
+`Super + Shift + L`, plus automatically after 15 minutes of inactivity and before suspend. Blurred current wallpaper, clock, date and a password field styled like the SDDM login: a "Password" hint, dots while typing, "Checking..." and "Wrong password". The current layout and a live Caps Lock indicator sit in the bottom left. The layout switches to Latin before locking.
 
-На время блокировки picom выключается и после разблокировки запускается снова: с ним картинка блокировки замирала (часы стоят), а после гашения экрана оставался старый кадр рабочего стола при уже захваченном вводе.
+picom is stopped while the screen is locked and started again afterwards. With picom running, the lock screen can freeze: the clock stops, and after the screen blanks a stale frame of the desktop may show while input is already grabbed.
 
-Точки и Caps Lock даёт небольшой патч к i3lock-color (`pkgs/i3lock-dots`: исходники уже с патчем и запасной готовый бинарник). `scripts/i3lock-dots.sh` собирает его за пару секунд без интернета и без makepkg, а если сборка не вышла, ставит готовый. Результат — `/usr/local/bin/i3lock-dots` рядом с обычным i3lock, `lock` берёт его сам.
+Dots and Caps Lock come from a small patch to i3lock-color (`pkgs/i3lock-dots`: patched sources plus a prebuilt fallback binary). `scripts/i3lock-dots.sh` compiles it in a couple of seconds without network access or makepkg, and installs the prebuilt binary if the build fails. The result is `/usr/local/bin/i3lock-dots` next to the regular i3lock; `lock` picks it up automatically.
 
-Только экран блокировки на уже настроенной системе: `su -c 'python install.py --lock'`, или `./lock-fix.sh` из Releases (это тот же установщик в режиме `--lock`). Что реально запустилось при последней блокировке, видно в `~/.cache/lock/last-run`, ошибки — в `~/.cache/lock/error.log`.
+Lock screen only, on an already configured system: `su -c 'python install.py --lock'` or `./lock-fix.sh` (the same installer in `--lock` mode). `~/.cache/lock/last-run` shows what was actually started on the last lock, errors go to `~/.cache/lock/error.log`.
 
-## Скриншоты
+## Screenshots
 
-`Print` — область, `Shift + Print` — весь экран в буфер. Flameshot 14 по умолчанию снимает экран через xdg-desktop-portal, а у portal-gtk скриншотов нет, поэтому на bspwm он молча не работает. Установщик включает в `~/.config/flameshot/flameshot.ini` захват напрямую через X11 (`useX11LegacyScreenshot=true`), но только для 14 и новее: старые версии этот ключ не знают и встают с окном ошибки. Отдельно: `su -c 'python install.py --flameshot'` или `./flameshot-fix.sh`.
+`Print` captures a region, `Shift + Print` copies the whole screen to the clipboard. Flameshot 14 captures through xdg-desktop-portal by default, but portal-gtk has no screenshot support, so on bspwm it silently fails. The installer sets `useX11LegacyScreenshot=true` in `~/.config/flameshot/flameshot.ini` to capture through X11 directly, only for version 14 and newer: older versions don't know the key and refuse to start with an error dialog. Separately: `su -c 'python install.py --flameshot'` or `./flameshot-fix.sh`.
 
-## Яркость
+## Brightness
 
-Клавиши яркости меняют её через systemd-logind, поэтому группа `video` не нужна. Какие клавиши и какая подсветка, установщик спрашивает сам; поменять потом: `python debug.py --keys` или руками в `~/.config/bspwm/hardware` и блоке `# brightness-keys` в `sxhkdrc`.
+Brightness keys go through systemd-logind, so you don't need to be in the `video` group. The installer asks which keys and which backlight to use; change it later with `python debug.py --keys` or by hand in `~/.config/bspwm/hardware` and the `# brightness-keys` block in `sxhkdrc`.
 
-## Firefox и Thunar
+## Firefox and Thunar
 
-Firefox: `user.js` (тёмная тема, пустая новая вкладка без рекламы, калькулятор в адресной строке) и `userChrome.css` из оригинала, переписанный под текущие переменные Firefox и палитру дотов. Применяется ко всем найденным профилям в `~/.mozilla/firefox` и `~/.config/mozilla/firefox`.
+Firefox: `user.js` (dark theme, blank new tab without ads, calculator in the address bar) and the original `userChrome.css`, rewritten for current Firefox variables and the dotfiles palette. Applied to every profile found in `~/.mozilla/firefox` and `~/.config/mozilla/firefox`.
 
 Thunar:
-- действия в меню: терминал здесь, открыть в Neovim, сделать обоями, скопировать путь, открыть от root, поиск через fzf
-- миниатюры, вид списком, папки сверху, закладки на XDG-папки
-- плагины архивов и съёмных дисков
-- GTK-тема Dracula-pink-accent и иконки dracula из оригинального репозитория, скачиваются при установке; отключается флагом `--no-dracula`
+- custom actions: open terminal here, open in Neovim, set as wallpaper, copy path, open as root, fzf search
+- thumbnails, list view, folders first, bookmarks for XDG folders
+- archive and removable media plugins
+- Dracula-pink-accent GTK theme and dracula icons from the original repository, downloaded during install; disable with `--no-dracula`
 
-## Горячие клавиши
+## Keybindings
 
-| Клавиши | Действие |
+| Keys | Action |
 |---|---|
-| `Super + Enter` | терминал |
-| `Super + Shift + Enter` | плавающий терминал |
-| `Super + D` | меню приложений |
-| `Super + X` | меню питания |
-| `Super + V` | история буфера обмена |
-| `Super + C` | закрыть окно (`Super + Alt + C` — убить) |
-| `Super + Space` | плавающее / тайлинг |
-| `Super + F` | полноэкранный режим |
+| `Super + Enter` | terminal |
+| `Super + Shift + Enter` | floating terminal |
+| `Super + D` | app launcher |
+| `Super + X` | power menu |
+| `Super + V` | clipboard history |
+| `Super + C` | close window (`Super + Alt + C` to kill) |
+| `Super + Space` | toggle floating / tiled |
+| `Super + F` | fullscreen |
 | `Super + T` / `Super + Ctrl + T` | tiled / pseudo-tiled |
 | `Super + M` | monocle |
-| `Super + H/J/K/L`, стрелки | фокус |
-| `Super + Alt + H/J/K/L` | поменять окна местами |
-| `Super + Ctrl + H/J/K/L` | размер окна |
-| `Super + Shift + стрелки` | двигать плавающее окно |
-| `Super + 1…0` / `Super + Shift + 1…0` | рабочий стол / перенести окно |
-| `Super + Ctrl + 1…9` | предвыбор доли разделения |
-| `Super + G` | поменять с самым большим окном |
-| `Alt + Tab` | следующее окно |
-| `Super + P` | скрыть / показать бар |
-| `Super + W` | случайные обои |
+| `Super + H/J/K/L`, arrows | focus |
+| `Super + Alt + H/J/K/L` | swap windows |
+| `Super + Ctrl + H/J/K/L` | resize window |
+| `Super + Shift + arrows` | move floating window |
+| `Super + 1…0` / `Super + Shift + 1…0` | switch desktop / move window |
+| `Super + Ctrl + 1…9` | preselect split ratio |
+| `Super + G` | swap with the biggest window |
+| `Alt + Tab` | next window |
+| `Super + P` | hide / show bar |
+| `Super + W` | random wallpaper |
 | `Super + Shift + W` | Wi‑Fi |
-| `Super + Shift + F` / `I` | Firefox / приватное окно |
+| `Super + Shift + F` / `I` | Firefox / private window |
 | `Super + Shift + N` | Thunar |
 | `Super + Shift + P` | pavucontrol |
 | `Super + Shift + T` | Telegram |
-| `Super + Shift + C` | калькулятор |
-| `Super + Shift + E` | эмодзи |
-| `Super + Shift + X` | пипетка (цвет в буфер) |
-| `Super + Shift + L` | заблокировать экран |
+| `Super + Shift + C` | calculator |
+| `Super + Shift + E` | emoji |
+| `Super + Shift + X` | color picker (copies to clipboard) |
+| `Super + Shift + L` | lock screen |
 | `Super + Shift + S` | btop |
 | `Super + Shift + B` | bluetooth |
-| `Super + Shift + M` | пересобрать мониторы и бар |
-| `Print` / `Shift + Print` | скриншот области / всего экрана |
-| `Super + Esc` | перечитать sxhkd |
-| `Ctrl + Shift + R` / `Q` | перезапустить bspwm / выйти |
-| `Alt + Shift` | раскладка |
+| `Super + Shift + M` | redetect monitors and restart bar |
+| `Print` / `Shift + Print` | screenshot region / full screen |
+| `Super + Esc` | reload sxhkd |
+| `Ctrl + Shift + R` / `Q` | restart bspwm / quit |
+| `Alt + Shift` | switch layout |
 
-Мультимедийные клавиши (громкость, микрофон, яркость, плеер) работают с уведомлением-ползунком.
+Media keys (volume, mic, brightness, player) work and show a slider notification.
 
-## Под себя
+## Customizing
 
-- автозапуск: `~/.config/bspwm/autostart.local`
-- своя схема мониторов: `~/.config/bspwm/screens`, иначе `autorandr`, иначе всё вправо от основного
-- алиасы и переменные: `~/.zshrc.local`, `~/.bashrc.local`, `~/.config/fish/local.fish`, `~/.profile.local`
-- цвета бара: `~/.config/polybar/colors.ini`
-- батарея, адаптер, подсветка: `~/.config/bspwm/hardware`
-- обои: `~/Pictures/wallpapers`, `Super + W` выбирает случайные
+- autostart: `~/.config/bspwm/autostart.local`
+- your own monitor layout: `~/.config/bspwm/screens`, otherwise `autorandr`, otherwise everything to the right of the primary
+- aliases and variables: `~/.zshrc.local`, `~/.bashrc.local`, `~/.config/fish/local.fish`, `~/.profile.local`
+- bar colors: `~/.config/polybar/colors.ini`
+- battery, adapter, backlight: `~/.config/bspwm/hardware`
+- wallpapers: `~/Pictures/wallpapers`, `Super + W` picks a random one
 
-## Структура
+## Layout
 
 ```
-install.py              установщик
-debug.py                проверка и исправление проблем
-pkgs/*.txt              списки пакетов, группы в [скобках] предлагаются на выбор
-pkgs/i3lock-dots/       i3lock-color с патчем: исходники и готовый бинарник
-home/                   всё, что копируется в $HOME
-scripts/sddm.sh         SDDM и тема
-scripts/tweaks.sh       Firefox и Thunar
-scripts/i3lock-dots.sh  сборка i3lock-dots
-scripts/ly.sh           палитра консоли и ly
-sddm/bspwm-dots/        тема SDDM
-firefox/                user.js и chrome/
-thunar/                 действия и настройки Thunar
-system/                 обои для ly
-wallpapers/             обои по умолчанию
-tools/bundle.sh         сборка отдельных скриптов в dist/
+install.py              installer
+debug.py                diagnostics and fixes
+pkgs/*.txt              package lists, [groups] are offered as choices
+pkgs/i3lock-dots/       patched i3lock-color: sources and prebuilt binary
+home/                   everything copied into $HOME
+scripts/sddm.sh         SDDM and its theme
+scripts/tweaks.sh       Firefox and Thunar
+scripts/i3lock-dots.sh  i3lock-dots build
+scripts/ly.sh           console palette and ly
+sddm/bspwm-dots/        SDDM theme
+firefox/                user.js and chrome/
+thunar/                 Thunar actions and settings
+system/                 ly wallpaper helpers
+wallpapers/             default wallpapers
+tools/bundle.sh         builds standalone scripts into dist/
 ```
 
-## Благодарности
+## Credits
 
-- [ZProger/bspwm-dotfiles](https://github.com/Zproger/bspwm-dotfiles): исходный вид, набор обоев, тема и иконки Dracula
-- [Dracula](https://draculatheme.com) GTK и иконки
-- [Catppuccin](https://github.com/catppuccin) палитра терминала и neovim
+- [ZProger/bspwm-dotfiles](https://github.com/Zproger/bspwm-dotfiles): the original look, wallpaper pack, Dracula theme and icons
+- [Dracula](https://draculatheme.com) GTK theme and icons
+- [Catppuccin](https://github.com/catppuccin) terminal and neovim palette
+- [i3lock-color](https://github.com/Raymo111/i3lock-color), the base of i3lock-dots
+
+## License
+
+[GPL-3.0](LICENSE). The patched i3lock-color in `pkgs/i3lock-dots` keeps its own MIT license (`pkgs/i3lock-dots/src/LICENSE`).
