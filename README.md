@@ -2,6 +2,10 @@
 
 **English** | [Русский](README.ru.md)
 
+[![License: GPL-3.0](https://img.shields.io/badge/license-GPL--3.0-blue)](LICENSE)
+[![Email](https://img.shields.io/badge/email-qwarwin%40gmail.com-D14836?logo=gmail&logoColor=white)](mailto:qwarwin@gmail.com)
+[![Telegram](https://img.shields.io/badge/Telegram-Channel-26A5E4?logo=telegram&logoColor=white)](https://t.me/qwarwin4git)
+
 A bspwm setup for Arch Linux in the style of [ZProger/bspwm-dotfiles](https://github.com/Zproger/bspwm-dotfiles), rebuilt from scratch for current Arch: PipeWire, picom 12+, polybar 3.7, rofi 2, your choice of zsh, fish or bash, an interactive Python installer and `debug.py` for common problems.
 
 ![desktop](assets/desktop.jpg)
