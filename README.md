@@ -6,7 +6,7 @@
 [![Email](https://img.shields.io/badge/email-qwarwin%40gmail.com-D14836?logo=gmail&logoColor=white)](mailto:qwarwin@gmail.com)
 [![Telegram](https://img.shields.io/badge/Telegram-Channel-26A5E4?logo=telegram&logoColor=white)](https://t.me/qwarwin4git)
 
-A bspwm setup for Arch Linux in the style of [ZProger/bspwm-dotfiles](https://github.com/Zproger/bspwm-dotfiles), rebuilt from scratch for current Arch: PipeWire, picom 12+, polybar 3.7, rofi 2, your choice of zsh, fish or bash, an interactive Python installer and `debug.py` for common problems.
+My bspwm dotfiles for Arch. It's a fork of [ZProger/bspwm-dotfiles](https://github.com/Zproger/bspwm-dotfiles): the look and wallpapers come from there, everything else is rewritten for current Arch. The old picom, polybar and rofi configs no longer work with recent versions, and I wanted an installer that isn't tied to specific user names or paths.
 
 ![desktop](assets/desktop.jpg)
 
