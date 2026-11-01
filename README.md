@@ -3,8 +3,11 @@
 **English** | [Русский](README.ru.md)
 
 [![License: GPL-3.0](https://img.shields.io/badge/license-GPL--3.0-blue)](LICENSE)
-[![Email](https://img.shields.io/badge/email-qwarwin%40gmail.com-D14836?logo=gmail&logoColor=white)](mailto:qwarwin@gmail.com)
-[![Telegram](https://img.shields.io/badge/Telegram-Channel-26A5E4?logo=telegram&logoColor=white)](https://t.me/qwarwin4git)
+
+<p align="center">
+  <a href="https://t.me/qwarwin4git"><img src="https://img.shields.io/badge/Telegram-Follow-26A5E4?style=for-the-badge&logo=telegram&logoColor=white&labelColor=1b1f24" height="40" alt="Telegram: follow the channel"></a>
+  <a href="mailto:qwarwin@gmail.com"><img src="https://img.shields.io/badge/Gmail-Contact-EA4335?style=for-the-badge&logo=gmail&logoColor=white&labelColor=1b1f24" height="40" alt="Gmail: contact"></a>
+</p>
 
 My bspwm dotfiles for Arch. It's a fork of [ZProger/bspwm-dotfiles](https://github.com/Zproger/bspwm-dotfiles): the look and wallpapers come from there, everything else is rewritten for current Arch. The old picom, polybar and rofi configs no longer work with recent versions, and I wanted an installer that isn't tied to specific user names or paths.
 

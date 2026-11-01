@@ -3,8 +3,11 @@
 [English](README.md) | **Русский**
 
 [![License: GPL-3.0](https://img.shields.io/badge/license-GPL--3.0-blue)](LICENSE)
-[![Email](https://img.shields.io/badge/email-qwarwin%40gmail.com-D14836?logo=gmail&logoColor=white)](mailto:qwarwin@gmail.com)
-[![Telegram](https://img.shields.io/badge/Telegram-Channel-26A5E4?logo=telegram&logoColor=white)](https://t.me/qwarwin4git)
+
+<p align="center">
+  <a href="https://t.me/qwarwin4git"><img src="https://img.shields.io/badge/Telegram-Follow-26A5E4?style=for-the-badge&logo=telegram&logoColor=white&labelColor=1b1f24" height="40" alt="Telegram: follow the channel"></a>
+  <a href="mailto:qwarwin@gmail.com"><img src="https://img.shields.io/badge/Gmail-Contact-EA4335?style=for-the-badge&logo=gmail&logoColor=white&labelColor=1b1f24" height="40" alt="Gmail: contact"></a>
+</p>
 
 Мои доты для bspwm на Arch. Это форк [ZProger/bspwm-dotfiles](https://github.com/Zproger/bspwm-dotfiles): внешний вид и обои оттуда, но всё остальное переписано заново под текущий Arch. Старые конфиги picom, polybar и rofi на свежих версиях уже не работают, а установщик хотелось сделать без привязки к конкретным именам и путям.
 
