@@ -1,12 +1,14 @@
-# bspwm-dots
+<h1 align="center">bspwm-dots</h1>
 
-[English](README.md) | **Русский**
-
-[![License: GPL-3.0](https://img.shields.io/badge/license-GPL--3.0-blue)](LICENSE)
+<p align="center"><a href="README.md">English</a> | <b>Русский</b></p>
 
 <p align="center">
-  <a href="https://t.me/qwarwin4git"><img src="https://img.shields.io/badge/Telegram-Follow-26A5E4?style=for-the-badge&logo=telegram&logoColor=white&labelColor=1b1f24" height="40" alt="Telegram: follow the channel"></a>
-  <a href="mailto:qwarwin@gmail.com"><img src="https://img.shields.io/badge/Gmail-Contact-EA4335?style=for-the-badge&logo=gmail&logoColor=white&labelColor=1b1f24" height="40" alt="Gmail: contact"></a>
+  <a href="LICENSE"><img src="https://img.shields.io/badge/License-GPL--3.0-A42E2B?style=for-the-badge&labelColor=1b1f24&logo=gnu&logoColor=white" height="40" alt="License: GPL-3.0"></a>
+</p>
+
+<p align="center">
+  <a href="https://t.me/qwarwin4git"><img src="https://img.shields.io/badge/Telegram-Follow-26A5E4?style=for-the-badge&labelColor=1b1f24&logo=telegram&logoColor=white" height="40" alt="Telegram: follow the channel"></a>
+  <a href="mailto:qwarwin@gmail.com"><img src="https://img.shields.io/badge/Gmail-Contact-EA4335?style=for-the-badge&labelColor=1b1f24&logo=gmail&logoColor=white" height="40" alt="Gmail: contact"></a>
 </p>
 
 Мои доты для bspwm на Arch. Это форк [ZProger/bspwm-dotfiles](https://github.com/Zproger/bspwm-dotfiles): внешний вид и обои оттуда, но всё остальное переписано заново под текущий Arch. Старые конфиги picom, polybar и rofi на свежих версиях уже не работают, а установщик хотелось сделать без привязки к конкретным именам и путям.
